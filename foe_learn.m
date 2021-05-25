@@ -159,8 +159,10 @@ format = ['#define BLOCK_HEIGHT  %d\r\n' ...
 cur_dir = cd;
 cd(fileparts(mfilename('fullpath')));
 try
-    [B(1), B(2), B(3), B(4), B(5), B(6), B(7), B(8)] = textread('foe_cd_grad_hmc.h', format);
-    compile = any(A - B);
+    fid = fopen('foe_cd_grad_hmc.h', 'rt');
+    B = textscan(fid, format);
+    fclose(fid);
+    compile = any(A - double(cat(2, B{:})));
 catch
     compile = true;
 end
