@@ -117,6 +117,10 @@ N = exp((0:niter-1)/(0.3*(niter-1)));
 N = N - N(1);
 L = min(size(X, 4), 1000);
 N = round(L + (size(X, 4) - L) * N / N(end));
+cum = cumsum(N);
+
+% Init progress bar
+pb = ojw_progressbar('Learning FoE filters...', 0, cum(end), 0.5); 
 
 for iter = 1:niter
     % Calculate the gradient of our energy function
@@ -141,6 +145,7 @@ for iter = 1:niter
         params = params + grad .* step(grad_size, iter);
         params(end,:) = exp(params(end,:));
     end
+    update(pb, cum(iter)); % Update the progress bar
 end
 if offset
     params = params([2:end-1 1 end],:);
